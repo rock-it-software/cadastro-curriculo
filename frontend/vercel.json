@@ -1,7 +1,7 @@
 {
   "outputDirectory": "dist/frontend/browser",
   "rewrites": [
-    { "source": "/api/:path*", "destination": "https://cadastro-curriculo.vercel.app/api/:path*" },
+    { "source": "/api/:path*", "destination": "https://cadastro-curriculo-peach.vercel.app/api/:path*" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
