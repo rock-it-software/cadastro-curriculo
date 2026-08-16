@@ -1,16 +1,18 @@
 <!--
 Sync Impact Report
-Version change: 2.0.0 → 2.1.0
+Version change: 2.1.0 → 2.2.0
 Modified principles:
-  - I. Angular Frontend Standards (expanded: Angular Material now mandated for UI
-    components)
-Added sections: none
+  - V. Simplicity & Prototype Speed (clarified: its "defer polish" rule does not
+    license inconsistency; cross-reference to new Principle VI added)
+Added sections:
+  - VI. Design & Usability Consistency (new principle)
 Removed sections: none
 Templates requiring updates:
   - .specify/templates/plan-template.md ✅ (generic "Constitution Check" gate references this file dynamically, no edits needed)
   - .specify/templates/spec-template.md ✅ (no constitution-specific references found)
   - .specify/templates/tasks-template.md ✅ (no constitution-specific references found)
   - .claude/skills/*/SKILL.md ✅ (no agent-specific constitution references found)
+  - specs/001-cadastro-curriculo/plan.md ✅ (active plan's Constitution Check table updated with Principle VI row)
 Follow-up TODOs: none
 -->
 
@@ -92,12 +94,50 @@ libraries, design patterns beyond what Angular/Node idioms already provide)
 MUST NOT be introduced speculatively for hypothetical future needs — they
 are justified only once a second concrete use case exists. Duplication of a
 few lines across two places is preferred over a premature shared
-abstraction. Non-functional polish (theming, animations, advanced error
-recovery, i18n) MUST be deferred unless explicitly requested by the user.
+abstraction. Non-functional polish (custom theming, animations, advanced
+error recovery, i18n) MUST be deferred unless explicitly requested by the
+user. Deferring polish MUST NOT be used to justify inconsistency: shipping
+two different ways of doing the same thing is not simpler than shipping one
+(see Principle VI).
 
 **Rationale**: The project is an intentionally fast, simple prototype
 running on free-tier infrastructure; abstraction layers and non-essential
 polish cost more in time than the value they add at this stage.
+
+### VI. Design & Usability Consistency
+The interface MUST present one coherent design and interaction language.
+Specifically:
+
+- **One theme**: a single Angular Material theme MUST be defined once in the
+  global stylesheet. Component-level hard-coded colors, fonts, or
+  one-off overrides of Material defaults MUST NOT be introduced; if a token
+  is missing, it is added to the theme, not inlined at the call site.
+- **One spacing and layout rhythm**: spacing MUST come from a single set of
+  values reused across the app rather than ad-hoc pixel values per component.
+- **One control per job**: a given interaction MUST use the same component
+  everywhere it appears — one date control, one multi-select pattern, one
+  file-attachment pattern, one primary/secondary button pairing.
+- **One feedback channel**: user feedback for a given class of event
+  (success, validation failure, system error) MUST use a single consistent
+  mechanism across the app; mixing dialogs, snackbars, inline banners, and
+  native `alert()` for the same class of event is prohibited.
+- **Consistent wording**: user-facing copy MUST use one language
+  (pt-BR for this project) and consistent terminology and casing for the same
+  concept across labels, buttons, dialogs, and error messages. Where the
+  specification fixes exact strings, those strings MUST be used verbatim.
+- **Consistent field presentation**: every form field MUST follow the same
+  label placement, required-field marker, helper-text position, and
+  error-message position and tone.
+- **Baseline usability**: every input MUST have a programmatically associated
+  label, MUST be reachable and operable by keyboard, and validation errors
+  MUST identify the field they belong to.
+
+**Rationale**: Consistency is what makes an interface learnable — a user who
+learns one field learns them all. It is also the *cheaper* path for a
+prototype: reusing one theme, one pattern, and one feedback mechanism is less
+work than inventing variations, so this principle reinforces rather than
+competes with Principle V. Deviations here are the most visible kind of defect
+to a stakeholder reviewing a demo.
 
 ## Technology Stack
 
@@ -134,7 +174,7 @@ polish cost more in time than the value they add at this stage.
   before proceeding to tasks.
 - Pull requests / merges MUST NOT be completed with failing tests for the
   affected area.
-- Any deviation from Principles I–V MUST be recorded and justified in the
+- Any deviation from Principles I–VI MUST be recorded and justified in the
   plan.md Complexity Tracking section; unjustified deviations are grounds
   for rejecting the plan.
 
@@ -155,4 +195,4 @@ Versioning policy (semantic versioning applied to governance):
   materially expanded.
 - **PATCH**: Wording clarifications, typo fixes, non-semantic refinements.
 
-**Version**: 2.1.0 | **Ratified**: 2026-08-15 | **Last Amended**: 2026-08-15
+**Version**: 2.2.0 | **Ratified**: 2026-08-15 | **Last Amended**: 2026-08-15

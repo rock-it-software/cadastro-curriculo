@@ -6,7 +6,7 @@
 
 **Status**: Draft
 
-**Input**: User description: "Cadastrar currículo - Eu como candidato gostaria de cadastrar meu currículo para vagas de trabalho, através de um formulário estilo Google Forms com upload de currículo (Word/PDF, até 10MB), dados pessoais (nome, data de nascimento, email, telefone, CEP) e seleção de vagas desejadas (checkboxes, múltipla escolha), com botões Salvar e Limpar, validação de campos obrigatórios e mensagens de feedback em dialog."
+**Input**: User description: "Cadastrar currículo - Eu como candidato gostaria de cadastrar meu currículo para vagas de trabalho, através de um formulário estilo Google Forms com upload de currículo (Word/PDF, até 4MB), dados pessoais (nome, data de nascimento, email, telefone, cidade e UF) e seleção de vagas desejadas (checkboxes, múltipla escolha), com botões Salvar e Limpar, validação de campos obrigatórios e mensagens de feedback em dialog."
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -26,14 +26,17 @@ mensagem de sucesso exibida.
 
 **Acceptance Scenarios**:
 
+0. **Given** o candidato acessa `/app` (ou a raiz `/`, que redireciona para
+   `/app`), **When** a página carrega, **Then** o formulário "Cadastre seu
+   currículo" é exibido imediatamente, em branco e pronto para preenchimento.
 1. **Given** o formulário "Cadastre seu currículo" está em branco, **When** o
    candidato preenche todos os campos obrigatórios (nome completo, data de
-   nascimento, email, telefone, CEP, ao menos uma vaga desejada) e anexa um
+   nascimento, email, telefone, cidade, UF, ao menos uma vaga desejada) e anexa um
    arquivo PDF de 2MB, **Then** ao clicar em "Salvar" os dados são persistidos,
    é exibido o diálogo "Salvo com sucesso" e todos os campos do formulário são
    limpos.
 2. **Given** o formulário está preenchido corretamente, **When** o candidato
-   anexa um arquivo `.docx` dentro do limite de 10MB, **Then** o arquivo é
+   anexa um arquivo `.docx` dentro do limite de 4MB, **Then** o arquivo é
    aceito e associado ao envio.
 3. **Given** o formulário está preenchido, **When** o candidato seleciona mais
    de uma vaga desejada (ex.: "Eletricista" e "Motorista"), **Then** ambas as
@@ -90,12 +93,40 @@ voltar ao estado inicial vazio.
 
 ---
 
+### User Story 4 - Acessar a Área do Recrutador (Priority: P3)
+
+Como recrutador, quero um acesso visível a partir da tela de cadastro para
+chegar à área de filtragem de currículos, sem precisar decorar uma URL.
+
+**Why this priority**: É apenas o ponto de entrada para uma funcionalidade que
+será construída em uma feature posterior; o cadastro de candidatos continua
+plenamente funcional sem ele.
+
+**Independent Test**: Pode ser testado clicando no botão "Área do Recrutador"
+no cabeçalho e verificando que a aplicação navega para `/recrutador` exibindo
+a tela correspondente.
+
+**Acceptance Scenarios**:
+
+1. **Given** o candidato ou recrutador está na tela de cadastro, **When**
+   observa o topo da página, **Then** vê um cabeçalho contendo o botão
+   "Área do Recrutador".
+2. **Given** o usuário está na tela de cadastro, **When** clica em
+   "Área do Recrutador", **Then** a aplicação navega para `/recrutador` sem
+   recarregar a página, exibindo a tela "Filtrar currículos" (nesta entrega,
+   o espaço reservado descrito em FR-001e).
+3. **Given** o usuário está na rota `/recrutador`, **When** observa a tela,
+   **Then** o mesmo cabeçalho e tema visual das demais telas são exibidos, e
+   existe um caminho de volta ao formulário de cadastro.
+
+---
+
 ### Edge Cases
 
 - O que acontece se o candidato tentar anexar um arquivo em formato diferente
   de Word ou PDF (ex.: imagem, `.txt`)? O sistema deve rejeitar o arquivo e
   informar que o formato não é aceito, sem permitir que ele seja anexado.
-- O que acontece se o arquivo anexado ultrapassar 10MB? O sistema deve
+- O que acontece se o arquivo anexado ultrapassar 4MB? O sistema deve
   rejeitar o arquivo e informar o limite de tamanho, sem permitir que ele seja
   anexado.
 - O que acontece se o candidato tentar anexar um segundo arquivo? O novo
@@ -104,9 +135,12 @@ voltar ao estado inicial vazio.
 - O que acontece se o candidato informar uma data de nascimento futura? O
   campo deve ser rejeitado com uma mensagem indicando que a data não pode ser
   posterior à data atual.
-- O que acontece se o CEP ou o telefone forem digitados em formato inválido
-  (fora do padrão brasileiro)? O sistema deve indicar que o valor está em
-  formato inválido e impedir o envio até a correção.
+- O que acontece se o telefone for digitado em formato inválido (fora do
+  padrão brasileiro)? O sistema deve indicar que o valor está em formato
+  inválido e impedir o envio até a correção.
+- O que acontece se o candidato não selecionar nenhuma UF na lista suspensa?
+  O campo permanece inválido e o envio é bloqueado com a mensagem "Preencha
+  todos os campos".
 - O que acontece se ocorrer uma falha ao persistir os dados (ex.: falha de
   conexão com o banco de dados) mesmo com todos os campos válidos? O sistema
   deve exibir uma mensagem de erro em formato de diálogo informando que não
@@ -120,6 +154,26 @@ voltar ao estado inicial vazio.
   currículo", em um layout de página única no estilo de um formulário do tipo
   Google Forms (título no topo, campos organizados verticalmente, um campo por
   vez).
+- **FR-001a**: O formulário de cadastro de currículo MUST ser a tela de
+  entrada do sistema, exibida na raiz da aplicação, no caminho `/app`.
+  Acessar `/app` MUST exibir o formulário diretamente, sem etapa intermediária
+  (sem tela de login, menu ou página inicial anterior).
+- **FR-001b**: O sistema MUST redirecionar o acesso à raiz do domínio (`/`)
+  para `/app`, e MUST redirecionar qualquer caminho desconhecido dentro da
+  aplicação para `/app`, de modo que o candidato sempre chegue ao formulário.
+- **FR-001c**: O sistema MUST exibir um cabeçalho fixo no topo de todas as
+  telas da aplicação, contendo o nome do sistema à esquerda e um botão
+  "Área do Recrutador" à direita. O cabeçalho é distinto do título do
+  formulário ("Cadastre seu currículo"), que permanece dentro do corpo da
+  página conforme FR-001.
+- **FR-001d**: O botão "Área do Recrutador" MUST navegar para a tela
+  "Filtrar currículos", na rota `/recrutador`, sem recarregar a página
+  (navegação interna da aplicação).
+- **FR-001e**: A tela "Filtrar currículos" NÃO faz parte desta feature. Nesta
+  entrega, a rota `/recrutador` MUST exibir uma tela mínima de espaço
+  reservado, usando o mesmo cabeçalho e o mesmo tema visual das demais telas,
+  informando que a área está em construção e oferecendo um caminho de volta
+  ao formulário de cadastro.
 - **FR-002**: O sistema MUST exibir, como primeiro campo do formulário, um
   controle de anexo de arquivo com um botão "Anexar currículo" e um texto
   explicativo indicando que os formatos aceitos são Word e PDF.
@@ -127,15 +181,15 @@ voltar ao estado inicial vazio.
   .docx) ou PDF (.pdf) para o anexo de currículo, rejeitando qualquer outro
   formato.
 - **FR-004**: O sistema MUST rejeitar arquivos de currículo com tamanho
-  superior a 10MB.
+  superior a 4MB.
 - **FR-005**: O sistema MUST permitir apenas um arquivo de currículo anexado
   por vez; um novo anexo substitui o anterior.
 - **FR-006**: O sistema MUST exibir os campos "Nome completo", "Data de
-  nascimento", "Email para contato", "Telefone para contato", "CEP de
-  residência" e "Vagas desejadas", além do controle de anexo de currículo.
+  nascimento", "Email para contato", "Telefone para contato", "Cidade", "UF"
+  e "Vagas desejadas", além do controle de anexo de currículo.
 - **FR-007**: O sistema MUST tratar todos os campos do formulário (anexo de
-  currículo, nome completo, data de nascimento, email, telefone, CEP e ao
-  menos uma vaga desejada) como obrigatórios.
+  currículo, nome completo, data de nascimento, email, telefone, cidade, UF e
+  ao menos uma vaga desejada) como obrigatórios.
 - **FR-008**: O sistema MUST limitar o campo "Nome completo" a no máximo 100
   caracteres.
 - **FR-009**: O sistema MUST apresentar o campo "Data de nascimento" como um
@@ -145,8 +199,14 @@ voltar ao estado inicial vazio.
   formato de email válido.
 - **FR-011**: O sistema MUST validar que o campo "Telefone para contato" segue
   o padrão de telefone brasileiro (DDD + número, com ou sem o nono dígito).
-- **FR-012**: O sistema MUST validar que o campo "CEP de residência" segue o
-  padrão de CEP brasileiro (8 dígitos numéricos, com ou sem hífen separador).
+- **FR-012**: O sistema MUST exibir o campo "Cidade" como campo de texto livre
+  para o nome da cidade de residência, com no máximo 100 caracteres.
+- **FR-012a**: O sistema MUST exibir o campo "UF" como uma lista suspensa
+  (dropdown) contendo exatamente as 27 unidades federativas brasileiras (AC,
+  AL, AP, AM, BA, CE, DF, ES, GO, MA, MT, MS, MG, PA, PB, PR, PE, PI, RJ, RN,
+  RS, RO, RR, SC, SP, SE, TO), permitindo a seleção de exatamente uma delas.
+- **FR-012b**: O sistema MUST tratar "Cidade" e "UF" como campos obrigatórios
+  e independentes; o valor de "UF" MUST ser um dos 27 códigos válidos.
 - **FR-013**: O sistema MUST apresentar o campo "Vagas desejadas" como uma
   lista de checkboxes com as opções: "Pedreiro", "Ajudante de pedreiro",
   "Eletricista", "Motorista", "Cozinheiro", "Marceneiro", "Técnico em
@@ -174,7 +234,7 @@ voltar ao estado inicial vazio.
 
 - **Cadastro de Currículo**: Representa o envio de um candidato, contendo
   nome completo, data de nascimento, email de contato, telefone de contato,
-  CEP de residência, uma ou mais vagas desejadas, o arquivo de currículo
+  cidade e UF de residência, uma ou mais vagas desejadas, o arquivo de currículo
   anexado (nome do arquivo, formato, tamanho) e a data/hora do envio.
 - **Vaga Desejada**: Representa uma das opções fixas de vaga que o candidato
   pode selecionar ("Pedreiro", "Ajudante de pedreiro", "Eletricista",
@@ -194,7 +254,7 @@ voltar ao estado inicial vazio.
 - **SC-003**: 100% dos envios com todos os campos válidos resultam em um
   registro persistido e na exibição da mensagem "Salvo com sucesso".
 - **SC-004**: 100% das tentativas de anexar um arquivo fora dos formatos
-  aceitos (Word/PDF) ou acima de 10MB são rejeitadas antes do envio do
+  aceitos (Word/PDF) ou acima de 4MB são rejeitadas antes do envio do
   formulário.
 - **SC-005**: Após o uso do botão "Limpar" ou após um envio bem-sucedido, o
   formulário retorna ao estado inicial em 100% dos casos, sem reter valores
@@ -204,14 +264,29 @@ voltar ao estado inicial vazio.
 
 - O padrão de telefone brasileiro aceito é DDD (2 dígitos) + número de 8 ou 9
   dígitos, com ou sem formatação (parênteses, espaço, hífen).
-- O padrão de CEP brasileiro aceito é 8 dígitos numéricos, com ou sem hífen
-  separador (formato `NNNNN-NNN`); não há validação de existência real do
-  CEP (não é feita consulta a uma base de logradouros).
+- O campo "Cidade" é texto livre; não há validação de que a cidade informada
+  exista de fato, nem de que ela pertença à UF selecionada (não é feita
+  consulta a uma base de municípios). As duas validações se limitam a: cidade
+  preenchida e UF entre as 27 opções válidas.
+- A lista de UFs é fixa no sistema (27 opções) e exibida apenas pela sigla
+  (ex.: "RJ"), sem o nome do estado por extenso, por ser o formato usual em
+  formulários brasileiros.
 - A opção "Outros" na lista de vagas desejadas é uma opção de checkbox como
   as demais, sem campo de texto livre adicional para detalhamento, pois o
   input do usuário não solicitou esse detalhamento.
 - Não há necessidade de autenticação/login do candidato para preencher o
-  formulário — o cadastro é público e aberto.
+  formulário — o cadastro é público e aberto. Como o formulário é a tela de
+  entrada em `/app` (FR-001a), não existe nenhuma outra tela antes dele.
+- `/app` é a raiz da aplicação. Nesta versão existem duas rotas: o formulário
+  de cadastro (raiz) e `/recrutador` (espaço reservado). Caminhos
+  desconhecidos retornam ao formulário (FR-001b) em vez de exibir uma página
+  de erro 404 dedicada.
+- A tela "Filtrar currículos" (listagem, filtros e download de currículos)
+  será especificada e construída como uma feature separada. Esta feature
+  entrega apenas o cabeçalho, o botão e a rota de destino.
+- A decisão sobre exigir autenticação na Área do Recrutador fica adiada para
+  a feature da tela "Filtrar currículos". Enquanto a rota exibir apenas o
+  espaço reservado, nenhum dado pessoal de candidato é exposto por ela.
 - Não há verificação de duplicidade de cadastro (mesmo candidato podendo se
   cadastrar mais de uma vez) — não solicitado pelo input do usuário.
 - Não é exigido um checkbox de consentimento de uso de dados (LGPD) para o

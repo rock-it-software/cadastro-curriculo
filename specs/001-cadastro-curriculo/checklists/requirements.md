@@ -34,5 +34,8 @@
 - All checklist items pass on first validation pass; the source input was
   highly detailed (explicit business rules), which minimized ambiguity.
 - No [NEEDS CLARIFICATION] markers were needed — reasonable defaults for
-  Brazilian phone/CEP format and LGPD consent scope were documented in the
-  Assumptions section instead.
+  Brazilian phone format, city/UF validation scope, and LGPD consent scope
+  were documented in the Assumptions section instead.
+- Revalidated 2026-08-15 after two amendments: CV size cap 10MB → 4MB, and
+  the "CEP de residência" field replaced by the composite "Cidade" (free
+  text) + "UF" (27-option dropdown). All items still pass.
