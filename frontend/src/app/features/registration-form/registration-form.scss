@@ -1,0 +1,73 @@
+.registration-form {
+  width: 100%;
+  max-width: var(--app-page-max-width);
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-3);
+}
+
+.registration-form__title-card {
+  border-top: 8px solid var(--mat-sys-primary);
+}
+
+.registration-form__title {
+  margin: 0;
+  font: var(--mat-sys-headline-small);
+  color: var(--mat-sys-on-surface);
+}
+
+.registration-form__question-card {
+  padding: var(--app-space-2) 0;
+}
+
+.registration-form__question-label {
+  font: var(--mat-sys-title-medium);
+  margin: 0 0 var(--app-space-1);
+}
+
+.registration-form__required {
+  color: var(--mat-sys-error);
+}
+
+.registration-form__helper-text {
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-on-surface-variant);
+  margin: 0 0 var(--app-space-3);
+}
+
+.registration-form__field {
+  width: 100%;
+}
+
+.registration-form__file-chip {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-1);
+  margin-top: var(--app-space-3);
+  font: var(--mat-sys-body-medium);
+}
+
+.registration-form__file-error {
+  color: var(--mat-sys-error);
+  font: var(--mat-sys-body-small);
+  margin-top: var(--app-space-2);
+}
+
+.registration-form__checkbox-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-2);
+}
+
+.registration-form__standalone-error {
+  display: block;
+  margin-top: var(--app-space-2);
+  font: var(--mat-sys-body-small);
+}
+
+.registration-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--app-space-3);
+  padding: var(--app-space-3) var(--app-space-1);
+}

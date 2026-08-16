@@ -1,0 +1,11 @@
+{
+  "name": "cadastro-curriculo",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Root manifest so Vercel resolves API function dependencies (backend/src imported by api/index.ts).",
+  "dependencies": {
+    "@supabase/supabase-js": "2.112.3",
+    "express": "5.2.1",
+    "multer": "2.2.0"
+  }
+}

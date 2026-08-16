@@ -189,18 +189,20 @@ strict TDD):
 - **Backend**: Node's built-in `node:test` runner (zero dependencies on Node
   24) for (a) the validation service covering every field rule and (b) the
   registration service happy path plus the validation-failure path.
-- **Frontend**: Angular's default Karma + Jasmine for the `RegistrationService`
-  unit test with `HttpTestingController`, and for the form component's
-  validator wiring.
+- **Frontend**: Angular 22's default `@angular/build:unit-test` (Vitest) for
+  the `RegistrationService` unit test with `HttpTestingController`.
 - No tests for purely presentational styling or layout.
 
 **Rationale**: Validation logic and the data-writing endpoint are exactly the
 "data could be lost or corrupted" areas Principle IV requires covering, while
 the Google-Forms styling is the presentational surface it exempts.
 
-**Alternatives considered**: Vitest for both sides (rejected — Angular's Vitest
-support would add configuration work for no prototype benefit); Playwright E2E
-(deferred — valuable later, but not required for the MVP under Principle V).
+**Alternatives considered**: Karma + Jasmine for the frontend (this was the
+original assumption, superseded once implementation confirmed Angular 22's
+CLI now scaffolds Vitest by default via `@angular/build:unit-test` — using the
+CLI's own default is simpler than reconfiguring it back to Karma, per
+Principle V); Playwright E2E (deferred — valuable later, but not required for
+the MVP under Principle V).
 
 ## R9: Repository layout
 

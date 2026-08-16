@@ -1,0 +1,166 @@
+<div class="app-page">
+  <div class="registration-form">
+    <mat-card class="registration-form__title-card" appearance="outlined">
+      <mat-card-content>
+        <h1 class="registration-form__title">Cadastre seu currículo</h1>
+      </mat-card-content>
+    </mat-card>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <mat-card class="registration-form__question-card" appearance="outlined">
+        <mat-card-content>
+          <p class="registration-form__question-label">
+            Anexar currículo <span class="registration-form__required">*</span>
+          </p>
+          <p class="registration-form__helper-text">
+            Formatos aceitos: Word (.doc, .docx) ou PDF (.pdf). Tamanho máximo: 4MB.
+          </p>
+
+          <button
+            type="button"
+            mat-stroked-button
+            (click)="fileInput.click()"
+          >
+            <mat-icon>attach_file</mat-icon>
+            Anexar currículo
+          </button>
+          <input
+            #fileInput
+            type="file"
+            hidden
+            [accept]="acceptAttribute"
+            (change)="onFileSelected($event)"
+          />
+
+          @if (cvFile) {
+            <div class="registration-form__file-chip">
+              <mat-icon>description</mat-icon>
+              <span>{{ cvFile.name }}</span>
+              <button type="button" mat-icon-button (click)="removeFile()" aria-label="Remover anexo">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          }
+
+          @if (fileError) {
+            <p class="registration-form__file-error">{{ fileError }}</p>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="registration-form__question-card" appearance="outlined">
+        <mat-card-content>
+          <mat-form-field appearance="outline" class="registration-form__field">
+            <mat-label>Nome completo</mat-label>
+            <input matInput formControlName="fullName" maxlength="100" required />
+            @if (form.controls.fullName.invalid && form.controls.fullName.touched) {
+              <mat-error>Informe seu nome completo.</mat-error>
+            }
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="registration-form__question-card" appearance="outlined">
+        <mat-card-content>
+          <mat-form-field appearance="outline" class="registration-form__field">
+            <mat-label>Data de nascimento</mat-label>
+            <input
+              matInput
+              [matDatepicker]="picker"
+              formControlName="birthDate"
+              [max]="maxBirthDate"
+              required
+            />
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            @if (form.controls.birthDate.invalid && form.controls.birthDate.touched) {
+              <mat-error>Informe uma data de nascimento válida (não pode ser futura).</mat-error>
+            }
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="registration-form__question-card" appearance="outlined">
+        <mat-card-content>
+          <mat-form-field appearance="outline" class="registration-form__field">
+            <mat-label>Email para contato</mat-label>
+            <input matInput type="email" formControlName="email" required />
+            @if (form.controls.email.invalid && form.controls.email.touched) {
+              <mat-error>Informe um email válido.</mat-error>
+            }
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="registration-form__question-card" appearance="outlined">
+        <mat-card-content>
+          <mat-form-field appearance="outline" class="registration-form__field">
+            <mat-label>Telefone para contato</mat-label>
+            <input matInput formControlName="phone" placeholder="(00) 00000-0000" required />
+            @if (form.controls.phone.invalid && form.controls.phone.touched) {
+              <mat-error>Informe um telefone válido no padrão brasileiro.</mat-error>
+            }
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="registration-form__question-card" appearance="outlined">
+        <mat-card-content>
+          <mat-form-field appearance="outline" class="registration-form__field">
+            <mat-label>Cidade</mat-label>
+            <input matInput formControlName="city" maxlength="100" required />
+            @if (form.controls.city.invalid && form.controls.city.touched) {
+              <mat-error>Informe sua cidade.</mat-error>
+            }
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="registration-form__question-card" appearance="outlined">
+        <mat-card-content>
+          <mat-form-field appearance="outline" class="registration-form__field">
+            <mat-label>UF</mat-label>
+            <mat-select formControlName="stateUf" required>
+              @for (uf of ufOptions; track uf.code) {
+                <mat-option [value]="uf.code">{{ uf.code }}</mat-option>
+              }
+            </mat-select>
+            @if (form.controls.stateUf.invalid && form.controls.stateUf.touched) {
+              <mat-error>Selecione uma UF.</mat-error>
+            }
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="registration-form__question-card" appearance="outlined">
+        <mat-card-content>
+          <p class="registration-form__question-label">
+            Vagas desejadas <span class="registration-form__required">*</span>
+          </p>
+          <div class="registration-form__checkbox-list">
+            @for (role of jobRoleOptions; track role.value) {
+              <mat-checkbox
+                [checked]="isRoleChecked(role.value)"
+                (change)="toggleRole(role.value, $event.checked)"
+              >
+                {{ role.label }}
+              </mat-checkbox>
+            }
+          </div>
+          @if (form.controls.desiredRoles.invalid && form.controls.desiredRoles.touched) {
+            <mat-error class="registration-form__standalone-error">
+              Selecione ao menos uma vaga.
+            </mat-error>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <div class="registration-form__actions">
+        <button type="button" mat-stroked-button (click)="onClear()">Limpar</button>
+        <button type="submit" mat-flat-button color="primary" [disabled]="submitting">
+          Salvar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

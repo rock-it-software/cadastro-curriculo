@@ -38,7 +38,8 @@ parsing), `@supabase/supabase-js` 2.112.3
 Supabase Storage private bucket `curriculos` for the CV files
 
 **Testing**: Backend — Node built-in `node:test` runner (validation service +
-registration service). Frontend — Karma + Jasmine (Angular default) for
+registration service). Frontend — Vitest (Angular 22's default unit-test
+builder, `@angular/build:unit-test`) for
 `RegistrationService` and form validator wiring. Risk-based per Constitution
 Principle IV; no tests for presentational styling.
 
