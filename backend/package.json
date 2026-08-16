@@ -8,7 +8,8 @@
     "dev": "tsx watch --env-file=.env src/index.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node --env-file=.env dist/index.js",
-    "test": "node --import tsx --test tests/**/*.test.ts"
+    "test": "node --import tsx --test tests/**/*.test.ts",
+    "seed": "tsx --env-file=.env scripts/seed-registrations.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.112.3",

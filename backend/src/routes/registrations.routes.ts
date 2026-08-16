@@ -2,6 +2,7 @@ import { Router, Request, Response, NextFunction } from 'express';
 import multer from 'multer';
 import { ApiError } from '../lib/api-error';
 import { createRegistration } from '../services/registration.service';
+import { downloadRegistrationCv, searchRegistrations } from '../services/registration-search.service';
 import { MAX_CV_FILE_SIZE_BYTES, RegistrationInput } from '../types/registration';
 
 const upload = multer({
@@ -61,3 +62,28 @@ registrationsRouter.post(
     }
   },
 );
+
+registrationsRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const result = await searchRegistrations(req.query);
+    res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
+});
+
+registrationsRouter.get('/:id/cv', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const download = await downloadRegistrationCv(String(req.params.id));
+    const asciiFallback = download.fileName.replace(/[^\x20-\x7E]/g, '_').replace(/"/g, "'");
+    const encoded = encodeURIComponent(download.fileName);
+    res.setHeader('Content-Type', download.contentType);
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="${asciiFallback}"; filename*=UTF-8''${encoded}`,
+    );
+    res.status(200).send(download.buffer);
+  } catch (err) {
+    next(err);
+  }
+});

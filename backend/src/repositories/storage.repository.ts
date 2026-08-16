@@ -32,3 +32,20 @@ export async function uploadCvFile(file: UploadedCvFile): Promise<UploadedCvResu
 export async function deleteCvFile(storagePath: string): Promise<void> {
   await getSupabaseClient().storage.from(getBucketName()).remove([storagePath]);
 }
+
+export async function downloadCvFile(storagePath: string): Promise<Buffer | null> {
+  const { data, error } = await getSupabaseClient()
+    .storage.from(getBucketName())
+    .download(storagePath);
+
+  if (error) {
+    const statusCode = (error as { statusCode?: string }).statusCode;
+    if (statusCode === '404') {
+      return null;
+    }
+    throw new Error(`Failed to download CV file: ${error.message}`);
+  }
+
+  const arrayBuffer = await data.arrayBuffer();
+  return Buffer.from(arrayBuffer);
+}

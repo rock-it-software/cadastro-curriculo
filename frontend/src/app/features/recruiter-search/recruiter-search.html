@@ -1,0 +1,108 @@
+<div class="app-page">
+  <div class="recruiter-search">
+    <mat-card class="recruiter-search__title-card" appearance="outlined">
+      <mat-card-content>
+        <h1 class="recruiter-search__title">Buscar candidatos</h1>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="recruiter-search__filter-card" appearance="outlined">
+      <mat-card-content>
+        <form [formGroup]="form" class="recruiter-search__filter-form" novalidate>
+          <mat-form-field appearance="outline" class="recruiter-search__field">
+            <mat-label>Vagas</mat-label>
+            <mat-select formControlName="jobRole">
+              @for (role of jobRoleOptions; track role.value) {
+                <mat-option [value]="role.value">{{ role.label }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="recruiter-search__field">
+            <mat-label>Cidade</mat-label>
+            <input matInput formControlName="city" maxlength="100" (blur)="onCityBlur()" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="recruiter-search__field">
+            <mat-label>UF</mat-label>
+            <mat-select formControlName="uf">
+              <mat-option [value]="''">Todas</mat-option>
+              @for (uf of ufOptions; track uf.code) {
+                <mat-option [value]="uf.code">{{ uf.code }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    @if (form.controls.jobRole.value) {
+      <div class="recruiter-search__summary">
+        Buscando candidatos para
+        <strong class="recruiter-search__summary-highlight">{{ selectedJobRoleLabel }}</strong>
+        @if (form.controls.city.value) {
+          em <strong>{{ form.controls.city.value }}</strong>
+        }
+        @if (form.controls.uf.value) {
+          — UF <strong>{{ form.controls.uf.value }}</strong>
+        }
+      </div>
+
+      <mat-card class="recruiter-search__results-card" appearance="outlined">
+        <mat-card-content>
+          @if (items.length > 0) {
+            <table mat-table [dataSource]="items" class="recruiter-search__table">
+              <ng-container matColumnDef="fullName">
+                <th mat-header-cell *matHeaderCellDef>Nome completo</th>
+                <td mat-cell *matCellDef="let candidate">{{ candidate.fullName }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="age">
+                <th mat-header-cell *matHeaderCellDef>Idade</th>
+                <td mat-cell *matCellDef="let candidate">{{ candidate.age }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="city">
+                <th mat-header-cell *matHeaderCellDef>Cidade</th>
+                <td mat-cell *matCellDef="let candidate">{{ candidate.city }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="stateUf">
+                <th mat-header-cell *matHeaderCellDef>UF</th>
+                <td mat-cell *matCellDef="let candidate">{{ candidate.stateUf }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="download">
+                <th mat-header-cell *matHeaderCellDef>Baixar currículo</th>
+                <td mat-cell *matCellDef="let candidate">
+                  <button
+                    mat-icon-button
+                    type="button"
+                    [attr.aria-label]="'Baixar currículo de ' + candidate.fullName"
+                    (click)="downloadCv(candidate)"
+                  >
+                    <mat-icon>description</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+
+            <mat-paginator
+              [length]="total"
+              [pageIndex]="page - 1"
+              [pageSize]="pageSize"
+              [pageSizeOptions]="pageSizeOptions"
+              (page)="onPageChange($event)"
+            >
+            </mat-paginator>
+          } @else if (searched && !loading) {
+            <p class="recruiter-search__empty">Nenhum candidato encontrado.</p>
+          }
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+</div>

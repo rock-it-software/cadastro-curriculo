@@ -9,9 +9,7 @@ export const routes: Routes = [
   {
     path: 'recrutador',
     loadComponent: () =>
-      import('./features/recruiter-area/recruiter-area-placeholder').then(
-        (m) => m.RecruiterAreaPlaceholder,
-      ),
+      import('./features/recruiter-search/recruiter-search').then((m) => m.RecruiterSearch),
   },
   { path: '**', redirectTo: '' },
 ];

@@ -38,8 +38,8 @@ initialized by 001-cadastro-curriculo. No new top-level directory.
 **Purpose**: Add the shared type/model shapes this feature introduces,
 before any query logic or UI consumes them
 
-- [ ] T001 [P] Add `CandidateSummary`, `RegistrationsSearchQuery`, and `PaginatedRegistrations` types to `backend/src/types/registration.ts` per data-model.md Response/Request Shapes
-- [ ] T002 [P] Add the `CandidateSummary` and paginated-envelope models in `frontend/src/app/models/candidate-summary.model.ts` per data-model.md
+- [X] T001 [P] Add `CandidateSummary`, `RegistrationsSearchQuery`, and `PaginatedRegistrations` types to `backend/src/types/registration.ts` per data-model.md Response/Request Shapes
+- [X] T002 [P] Add the `CandidateSummary` and paginated-envelope models in `frontend/src/app/models/candidate-summary.model.ts` per data-model.md
 
 ---
 
@@ -51,13 +51,13 @@ Supabase query (research.md §R1) rather than per-criterion endpoints.
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T003 [US: shared] Implement `findRegistrations({ jobRole, city, uf, page, pageSize })` in `backend/src/repositories/registration.repository.ts` — `.contains('desired_roles', [jobRole])`, optional `.ilike('city', ...)`, optional `.eq('state_uf', ...)`, `.order('created_at', { ascending: true })`, `.range(...)`, `{ count: 'exact' }` per research.md §R1
-- [ ] T004 [P] Implement `getRegistrationCvMeta(id)` (returns `cv_storage_path`, `cv_file_name`, `cv_content_type` or `null`) in `backend/src/repositories/registration.repository.ts`
-- [ ] T005 [P] Implement `calculateAge(birthDate: string): number` (completed years as of today) in `backend/src/services/registration-search.service.ts` per research.md §R3
-- [ ] T006 Implement `searchRegistrations(query)` in `backend/src/services/registration-search.service.ts` — validates `jobRole` (required, one of the 9 slugs) and `uf` (optional, one of the 27 codes), clamps `page`/`pageSize` to the allowed set (default 1/20), calls T003, maps each row to `CandidateSummary` using T005 (depends on T001, T003, T005)
-- [ ] T007 Implement `downloadRegistrationCv(id)` in `backend/src/services/registration-search.service.ts` — calls T004, downloads the object from the `curriculos` bucket via `supabase.storage.from('curriculos').download(path)`, returns the buffer plus `fileName`/`contentType`, or a `not_found`/`internal_error` result (depends on T004)
-- [ ] T008 Add `GET /` (query-param parsing → T006 → `200`/`400`/`500` per contracts/registrations-search-api.md) and `GET /:id/cv` (→ T007 → streams with `Content-Disposition: attachment`, or `404`/`500`) handlers in `backend/src/routes/registrations.routes.ts` (depends on T006, T007)
-- [ ] T009 [P] Implement `RecruiterSearchService` in `frontend/src/app/services/recruiter-search.service.ts` — `search(filter)` builds the query string and calls `GET /api/registrations`; `downloadCv(id, fileName)` calls `GET /api/registrations/:id/cv` and triggers a browser download of the returned blob (depends on T002)
+- [X] T003 [US: shared] Implement `findRegistrations({ jobRole, city, uf, page, pageSize })` in `backend/src/repositories/registration.repository.ts` — `.contains('desired_roles', [jobRole])`, optional `.ilike('city', ...)`, optional `.eq('state_uf', ...)`, `.order('created_at', { ascending: true })`, `.range(...)`, `{ count: 'exact' }` per research.md §R1
+- [X] T004 [P] Implement `getRegistrationCvMeta(id)` (returns `cv_storage_path`, `cv_file_name`, `cv_content_type` or `null`) in `backend/src/repositories/registration.repository.ts`
+- [X] T005 [P] Implement `calculateAge(birthDate: string): number` (completed years as of today) in `backend/src/services/registration-search.service.ts` per research.md §R3
+- [X] T006 Implement `searchRegistrations(query)` in `backend/src/services/registration-search.service.ts` — validates `jobRole` (required, one of the 9 slugs) and `uf` (optional, one of the 27 codes), clamps `page`/`pageSize` to the allowed set (default 1/20), calls T003, maps each row to `CandidateSummary` using T005 (depends on T001, T003, T005)
+- [X] T007 Implement `downloadRegistrationCv(id)` in `backend/src/services/registration-search.service.ts` — calls T004, downloads the object from the `curriculos` bucket via `supabase.storage.from('curriculos').download(path)`, returns the buffer plus `fileName`/`contentType`, or a `not_found`/`internal_error` result (depends on T004)
+- [X] T008 Add `GET /` (query-param parsing → T006 → `200`/`400`/`500` per contracts/registrations-search-api.md) and `GET /:id/cv` (→ T007 → streams with `Content-Disposition: attachment`, or `404`/`500`) handlers in `backend/src/routes/registrations.routes.ts` (depends on T006, T007)
+- [X] T009 [P] Implement `RecruiterSearchService` in `frontend/src/app/services/recruiter-search.service.ts` — `search(filter)` builds the query string and calls `GET /api/registrations`; `downloadCv(id, fileName)` calls `GET /api/registrations/:id/cv` and triggers a browser download of the returned blob (depends on T002)
 
 **Checkpoint**: The backend fully filters, sorts, paginates, and serves CV downloads; the frontend has a typed service to call it. User story implementation (UI) can now begin.
 
@@ -76,13 +76,13 @@ oldest submission first, and that no table renders before selection
 
 ### Implementation for User Story 1
 
-- [ ] T010 [US1] Create the `RecruiterSearch` standalone component skeleton with a reactive `FormGroup` containing the required `jobRole` control in `frontend/src/app/features/recruiter-search/recruiter-search.ts`
-- [ ] T011 [US1] Build the "Buscar candidatos" filter form template with a `mat-select` for "Vagas" listing the 9 role labels (reusing the existing `JOB_ROLES` constant) in `frontend/src/app/features/recruiter-search/recruiter-search.html`
-- [ ] T012 [US1] Subscribe to `jobRole.valueChanges`, call `RecruiterSearchService.search()` when it has a value, and keep the results table hidden/empty when it does not, in `frontend/src/app/features/recruiter-search/recruiter-search.ts` (FR-003, FR-007, FR-012)
-- [ ] T013 [US1] Render the results `mat-table` with columns "Nome completo", "Idade", "Cidade", "UF" bound to the service response's `items`, preserving server-provided order, in `frontend/src/app/features/recruiter-search/recruiter-search.html` (FR-013, FR-014 — download column added in US3)
-- [ ] T014 [US1] Point the `recrutador` route at `RecruiterSearch` in `frontend/src/app/app.routes.ts` and delete `frontend/src/app/features/recruiter-area/recruiter-area-placeholder.ts`
-- [ ] T015 [P] [US1] Write `node:test` coverage in `backend/tests/registration-search.service.test.ts` asserting: missing `jobRole` is rejected before any query runs, and a candidate is returned only when the selected role is present in `desired_roles`
-- [ ] T016 [P] [US1] Write Vitest coverage in `frontend/src/app/services/recruiter-search.service.spec.ts` asserting `search({ jobRole })` calls `GET /api/registrations?jobRole=...` with no other query params, using `HttpTestingController`
+- [X] T010 [US1] Create the `RecruiterSearch` standalone component skeleton with a reactive `FormGroup` containing the required `jobRole` control in `frontend/src/app/features/recruiter-search/recruiter-search.ts`
+- [X] T011 [US1] Build the "Buscar candidatos" filter form template with a `mat-select` for "Vagas" listing the 9 role labels (reusing the existing `JOB_ROLES` constant) in `frontend/src/app/features/recruiter-search/recruiter-search.html`
+- [X] T012 [US1] Subscribe to `jobRole.valueChanges`, call `RecruiterSearchService.search()` when it has a value, and keep the results table hidden/empty when it does not, in `frontend/src/app/features/recruiter-search/recruiter-search.ts` (FR-003, FR-007, FR-012)
+- [X] T013 [US1] Render the results `mat-table` with columns "Nome completo", "Idade", "Cidade", "UF" bound to the service response's `items`, preserving server-provided order, in `frontend/src/app/features/recruiter-search/recruiter-search.html` (FR-013, FR-014 — download column added in US3)
+- [X] T014 [US1] Point the `recrutador` route at `RecruiterSearch` in `frontend/src/app/app.routes.ts` and delete `frontend/src/app/features/recruiter-area/recruiter-area-placeholder.ts`
+- [X] T015 [P] [US1] Write `node:test` coverage in `backend/tests/registration-search.service.test.ts` asserting: missing `jobRole` is rejected before any query runs, and a candidate is returned only when the selected role is present in `desired_roles`
+- [X] T016 [P] [US1] Write Vitest coverage in `frontend/src/app/services/recruiter-search.service.spec.ts` asserting `search({ jobRole })` calls `GET /api/registrations?jobRole=...` with no other query params, using `HttpTestingController`
 
 **Checkpoint**: User Story 1 is fully functional — selecting a vaga alone renders the correct, correctly-ordered list. This is the deployable MVP.
 
@@ -101,11 +101,11 @@ Scenario B).
 
 ### Implementation for User Story 2
 
-- [ ] T017 [US2] Add `city` and `uf` controls to the `FormGroup` — `uf` as a `mat-select` populated from the existing `BRAZILIAN_STATES` constant, `city` as a text `mat-form-field` — in `frontend/src/app/features/recruiter-search/recruiter-search.ts` / `.html`
-- [ ] T018 [US2] Trigger a new search immediately on `uf.valueChanges`, and only on the city input's native `(blur)` event rather than `valueChanges`, in `frontend/src/app/features/recruiter-search/recruiter-search.ts` (FR-006, FR-007, FR-008)
-- [ ] T019 [US2] Render the filter summary below the form — selected vaga visually highlighted (e.g. bold/chip), plus cidade/UF only when filled — in `frontend/src/app/features/recruiter-search/recruiter-search.html` (FR-010)
-- [ ] T020 [US2] Render a "Nenhum candidato encontrado" message in place of the table body when `items` is empty, in `frontend/src/app/features/recruiter-search/recruiter-search.html` (FR-020)
-- [ ] T021 [P] [US2] Extend `backend/tests/registration-search.service.test.ts` with cases for: case-insensitive partial city match, exact UF match, and jobRole+city+uf combined (FR-006, FR-009)
+- [X] T017 [US2] Add `city` and `uf` controls to the `FormGroup` — `uf` as a `mat-select` populated from the existing `BRAZILIAN_STATES` constant, `city` as a text `mat-form-field` — in `frontend/src/app/features/recruiter-search/recruiter-search.ts` / `.html`
+- [X] T018 [US2] Trigger a new search immediately on `uf.valueChanges`, and only on the city input's native `(blur)` event rather than `valueChanges`, in `frontend/src/app/features/recruiter-search/recruiter-search.ts` (FR-006, FR-007, FR-008)
+- [X] T019 [US2] Render the filter summary below the form — selected vaga visually highlighted (e.g. bold/chip), plus cidade/UF only when filled — in `frontend/src/app/features/recruiter-search/recruiter-search.html` (FR-010)
+- [X] T020 [US2] Render a "Nenhum candidato encontrado" message in place of the table body when `items` is empty, in `frontend/src/app/features/recruiter-search/recruiter-search.html` (FR-020)
+- [X] T021 [P] [US2] Extend `backend/tests/registration-search.service.test.ts` with cases for: case-insensitive partial city match, exact UF match, and jobRole+city+uf combined (FR-006, FR-009)
 
 **Checkpoint**: User Stories 1 and 2 both work — vaga-only search still works, and adding cidade/UF narrows results correctly with an accurate summary.
 
@@ -124,9 +124,9 @@ Scenarios C and D).
 
 ### Implementation for User Story 3
 
-- [ ] T022 [US3] Add the "Baixar currículo" column with a `mat-icon-button` (`description` icon, `aria-label` naming the candidate) as the last column, calling `RecruiterSearchService.downloadCv(id, fileName)` on click, in `frontend/src/app/features/recruiter-search/recruiter-search.html` / `.ts` (FR-014, FR-016)
-- [ ] T023 [US3] On a failed download, show a `MatSnackBar` message identifying the affected candidate, without opening any dialog and without altering the table state, in `frontend/src/app/features/recruiter-search/recruiter-search.ts` (FR-016a)
-- [ ] T024 [P] [US3] Write `node:test` coverage in `backend/tests/registration-search.service.test.ts` for `downloadRegistrationCv`: existing file returns the buffer with the right `fileName`/`contentType`, an unknown `id` returns `not_found`, and a missing storage object returns `not_found`
+- [X] T022 [US3] Add the "Baixar currículo" column with a `mat-icon-button` (`description` icon, `aria-label` naming the candidate) as the last column, calling `RecruiterSearchService.downloadCv(id, fileName)` on click, in `frontend/src/app/features/recruiter-search/recruiter-search.html` / `.ts` (FR-014, FR-016)
+- [X] T023 [US3] On a failed download, show a `MatSnackBar` message identifying the affected candidate, without opening any dialog and without altering the table state, in `frontend/src/app/features/recruiter-search/recruiter-search.ts` (FR-016a)
+- [X] T024 [P] [US3] Write `node:test` coverage in `backend/tests/registration-search.service.test.ts` for `downloadRegistrationCv`: existing file returns the buffer with the right `fileName`/`contentType`, an unknown `id` returns `not_found`, and a missing storage object returns `not_found`
 
 **Checkpoint**: All three P1/P2 stories work together — filter, refine, and download all function correctly.
 
@@ -144,10 +144,10 @@ page size, and confirm the footer's total count stays accurate throughout
 
 ### Implementation for User Story 4
 
-- [ ] T025 [US4] Add a `MatPaginator` below the table bound to the response's `total` (as `length`) with `pageSizeOptions = [10, 20, 50, 100]` and default `pageSize = 20`, in `frontend/src/app/features/recruiter-search/recruiter-search.html` / `.ts` (FR-017)
-- [ ] T026 [US4] Wire the paginator's `(page)` event to re-run the search with the new `page`/`pageSize`, resetting to page 1 whenever `pageSize` changes, in `frontend/src/app/features/recruiter-search/recruiter-search.ts` (FR-018, SC-004)
-- [ ] T027 [US4] Display the total matching record count at the end of the table (reusing the paginator's built-in range/total label or an adjacent element), in `frontend/src/app/features/recruiter-search/recruiter-search.html` (FR-019, SC-005)
-- [ ] T028 [P] [US4] Extend `backend/tests/registration-search.service.test.ts` covering `page`/`pageSize` clamping to the allowed defaults and the returned `total` matching the unpaginated row count
+- [X] T025 [US4] Add a `MatPaginator` below the table bound to the response's `total` (as `length`) with `pageSizeOptions = [10, 20, 50, 100]` and default `pageSize = 20`, in `frontend/src/app/features/recruiter-search/recruiter-search.html` / `.ts` (FR-017)
+- [X] T026 [US4] Wire the paginator's `(page)` event to re-run the search with the new `page`/`pageSize`, resetting to page 1 whenever `pageSize` changes, in `frontend/src/app/features/recruiter-search/recruiter-search.ts` (FR-018, SC-004)
+- [X] T027 [US4] Display the total matching record count at the end of the table (reusing the paginator's built-in range/total label, localized to pt-BR via `MatPaginatorIntl`) in `frontend/src/app/features/recruiter-search/recruiter-search.html`/`.ts` (FR-019, SC-005)
+- [X] T028 [P] [US4] Extend `backend/tests/registration-search.service.test.ts` covering `page`/`pageSize` clamping to the allowed defaults and the returned `total` matching the unpaginated row count
 
 **Checkpoint**: All four user stories are independently functional — filtering, refining, downloading, and paginating all work together.
 
@@ -157,10 +157,10 @@ page size, and confirm the footer's total count stays accurate throughout
 
 **Purpose**: Improvements that affect the whole recruiter screen
 
-- [ ] T029 [P] Audit `recruiter-search.html`/`.scss` against Constitution Principle VI — the single theme, shared spacing tokens, and the `MatSnackBar`-only channel for download failures — removing any ad-hoc styling
-- [ ] T030 [P] Confirm spec-fixed strings appear verbatim: "Buscar candidatos", "Nome completo", "Idade", "Cidade", "UF", "Baixar currículo", and the empty-result message
-- [ ] T031 Run the full backend and frontend test suites (`cd backend && npm test`, `cd frontend && npm test`) and confirm all suites pass, including the pre-existing 001 suites
-- [ ] T032 Execute every quickstart.md validation scenario (0–F) against the local environment
+- [X] T029 [P] Audit `recruiter-search.html`/`.scss` against Constitution Principle VI — the single theme, shared spacing tokens, and the `MatSnackBar`-only channel for download failures — removing any ad-hoc styling
+- [X] T030 [P] Confirm spec-fixed strings appear verbatim: "Buscar candidatos", "Nome completo", "Idade", "Cidade", "UF", "Baixar currículo", and the empty-result message
+- [X] T031 Run the full backend and frontend test suites (`cd backend && npm test`, `cd frontend && npm test`) and confirm all suites pass, including the pre-existing 001 suites
+- [X] T032 Execute every quickstart.md validation scenario (0–F) against the local environment — verified live against the real Supabase project (existing seeded data) via headless-browser screenshots: vaga-only filter (A), city+UF refinement including the empty-city widen-back (B), CV download producing a real PDF via the RFC 5987-encoded `Content-Disposition` header (C), and the "Nenhum candidato encontrado" empty state (F/Edge Cases). Found and fixed two real bugs in the process — see Notes.
 
 ---
 
@@ -244,4 +244,22 @@ With two developers, after Foundational completes:
 - No schema migration, no new dependency, and no new hosting configuration
   are introduced by this feature — see plan.md Constitution Check
 - Commit after each task or logical group
+- **Bugs found and fixed during live browser verification (T032)**:
+  1. This app runs Angular zoneless (no `zone.js` in `angular.json`/`package.json`).
+     Mutating plain component properties inside an RxJS `.subscribe()` callback
+     (e.g. after the `GET /api/registrations` response) never triggered a
+     re-render — the table stayed empty even though the HTTP call succeeded.
+     Fixed by injecting `ChangeDetectorRef` and calling `markForCheck()` in
+     `RecruiterSearch`'s search success/error callbacks. This same pattern
+     (plain-property mutation inside `.subscribe()`) exists in 001's
+     `RegistrationForm.onSubmit()` and was never exercised against a live
+     backend in that feature's validation (`registration-form.ts` T059 notes
+     only synchronous scenarios were Playwright-verified) — worth checking
+     there separately.
+  2. `Content-Disposition` on `GET /api/registrations/:id/cv` set the raw
+     (possibly non-ASCII) file name unescaped, which is invalid per HTTP
+     header rules and got mangled in transit. Fixed with an RFC 5987
+     `filename*=UTF-8''...` parameter plus an ASCII-sanitized `filename=`
+     fallback in `registrations.routes.ts`, and taught the frontend
+     `RecruiterSearchService.extractFileName()` to prefer the UTF-8 variant.
 - Stop at any checkpoint to validate a story independently

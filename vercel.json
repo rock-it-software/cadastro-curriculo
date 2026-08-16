@@ -1,6 +1,6 @@
 {
-  "buildCommand": "cd frontend && npm install && npm run build",
-  "outputDirectory": "frontend/dist/frontend/browser",
+  "buildCommand": "npm install && npm run build",
+  "outputDirectory": "dist/frontend/browser",
   "redirects": [
     { "source": "/", "destination": "/app", "permanent": false },
     { "source": "/recrutador", "destination": "/app/recrutador", "permanent": false }
