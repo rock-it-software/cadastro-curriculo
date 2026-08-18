@@ -87,6 +87,7 @@ Evaluated against Constitution v2.2.0.
 | IV. Pragmatic Testing | Tests required for validation logic, data-mutating endpoints, data transforms; presentational UI exempt | ✅ PASS | `node:test` covers the query-building logic (job role required, city/UF optional, combination) and the age-calculation transform — see [research.md § R6](./research.md#r6-testing-approach); frontend `RecruiterSearchService` unit-tested with `HttpTestingController`; the Material table/paginator wiring is exempt as presentational |
 | V. Simplicity & Prototype Speed | Simplest structure, no speculative abstraction, defer non-functional polish | ✅ PASS | No new table, no join, no signed-URL flow, no client-side filtering duplicate of the server query (see research.md R1–R2 alternatives-rejected); reuses the existing `JOB_ROLES`/`BRAZILIAN_STATES` constants instead of redefining them; server-side pagination avoids building a second client-side paging mechanism |
 | VI. Design & Usability Consistency | One theme, one spacing rhythm, one control per job, one feedback channel, consistent wording and field presentation, baseline a11y | ✅ PASS | See compliance notes below the table |
+| VI. Design & Usability Consistency (incl. responsive layout, added v2.3.0) | Correct rendering, no horizontal scrolling, at iPhone 14 (390px), iPhone 14 Pro Max (430px), iPad (810px), and desktop (1280px+) reference widths | ✅ PASS (re-checked) | Evaluated against v2.2.0 at original authoring; re-verified against v2.3.0's responsive-layout bullet post-hoc — see compliance note below |
 | Tech Stack: Hosting | Frontend and backend on a permanently free hosting tier, no card-gated trial | ✅ PASS | Same Vercel Hobby project as 001; no new deployable, no new domain/route prefix |
 
 **Principle VI compliance for this feature**:
@@ -123,6 +124,13 @@ Evaluated against Constitution v2.2.0.
   `mat-label`; the paginator and table are keyboard-navigable (native
   Material behavior); the download icon button has an `aria-label`
   naming the action and the candidate.
+- **Responsive layout (v2.3.0)**: the results table had no horizontal-scroll
+  containment and overflowed at the iPhone 14 (390px) and iPhone 14 Pro Max
+  (430px) reference widths — fixed by wrapping `.recruiter-search__table` in
+  a `.recruiter-search__table-wrapper` with `overflow-x: auto`. Manually
+  checked at 390px, 430px, 810px (iPad), and 1280px (desktop) after the fix;
+  the filter form's `flex-wrap: wrap` already reflowed correctly at all four
+  widths without changes.
 
 **Free-tier limits**: unchanged from 001 — this feature adds `SELECT`
 queries and object downloads only, well within the same Supabase 500 MB

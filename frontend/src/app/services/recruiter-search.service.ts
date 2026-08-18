@@ -12,6 +12,9 @@ export class RecruiterSearchService {
 
   search(filter: RegistrationsSearchFilter): Observable<PaginatedRegistrations> {
     let params = new HttpParams().set('jobRole', filter.jobRole);
+    if (filter.bairro) {
+      params = params.set('bairro', filter.bairro);
+    }
     if (filter.city) {
       params = params.set('city', filter.city);
     }

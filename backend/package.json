@@ -9,7 +9,8 @@
     "build": "tsc -p tsconfig.json",
     "start": "node --env-file=.env dist/index.js",
     "test": "node --import tsx --test tests/**/*.test.ts",
-    "seed": "tsx --env-file=.env scripts/seed-registrations.ts"
+    "seed": "tsx --env-file=.env scripts/seed-registrations.ts",
+    "backfill:bairro": "tsx --env-file=.env scripts/backfill-bairro.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.112.3",

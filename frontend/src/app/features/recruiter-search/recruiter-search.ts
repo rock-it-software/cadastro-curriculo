@@ -46,10 +46,11 @@ export class RecruiterSearch {
   readonly jobRoleOptions = JOB_ROLE_OPTIONS;
   readonly ufOptions = BRAZILIAN_STATES;
   readonly pageSizeOptions = PAGE_SIZE_OPTIONS;
-  readonly displayedColumns = ['fullName', 'age', 'city', 'stateUf', 'download'];
+  readonly displayedColumns = ['fullName', 'age', 'bairro', 'city', 'stateUf', 'download'];
 
   readonly form = this.fb.group({
     jobRole: this.fb.control<string>(''),
+    bairro: this.fb.control<string>(''),
     city: this.fb.control<string>(''),
     uf: this.fb.control<string>(''),
   });
@@ -64,6 +65,10 @@ export class RecruiterSearch {
   constructor() {
     this.form.controls.jobRole.valueChanges.subscribe(() => this.runSearch(true));
     this.form.controls.uf.valueChanges.subscribe(() => this.runSearch(true));
+  }
+
+  onBairroBlur(): void {
+    this.runSearch(true);
   }
 
   onCityBlur(): void {
@@ -110,12 +115,13 @@ export class RecruiterSearch {
       this.page = 1;
     }
 
+    const bairro = this.form.controls.bairro.value?.trim() || undefined;
     const city = this.form.controls.city.value?.trim() || undefined;
     const uf = this.form.controls.uf.value || undefined;
 
     this.loading = true;
     this.searchService
-      .search({ jobRole, city, uf, page: this.page, pageSize: this.pageSize })
+      .search({ jobRole, bairro, city, uf, page: this.page, pageSize: this.pageSize })
       .subscribe({
         next: (result) => {
           this.loading = false;

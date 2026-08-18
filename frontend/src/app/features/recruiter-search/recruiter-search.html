@@ -19,6 +19,11 @@
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="recruiter-search__field">
+            <mat-label>Bairro</mat-label>
+            <input matInput formControlName="bairro" maxlength="100" (blur)="onBairroBlur()" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="recruiter-search__field">
             <mat-label>Cidade</mat-label>
             <input matInput formControlName="city" maxlength="100" (blur)="onCityBlur()" />
           </mat-form-field>
@@ -40,6 +45,9 @@
       <div class="recruiter-search__summary">
         Buscando candidatos para
         <strong class="recruiter-search__summary-highlight">{{ selectedJobRoleLabel }}</strong>
+        @if (form.controls.bairro.value) {
+          no bairro <strong>{{ form.controls.bairro.value }}</strong>
+        }
         @if (form.controls.city.value) {
           em <strong>{{ form.controls.city.value }}</strong>
         }
@@ -51,44 +59,51 @@
       <mat-card class="recruiter-search__results-card" appearance="outlined">
         <mat-card-content>
           @if (items.length > 0) {
-            <table mat-table [dataSource]="items" class="recruiter-search__table">
-              <ng-container matColumnDef="fullName">
-                <th mat-header-cell *matHeaderCellDef>Nome completo</th>
-                <td mat-cell *matCellDef="let candidate">{{ candidate.fullName }}</td>
-              </ng-container>
+            <div class="recruiter-search__table-wrapper">
+              <table mat-table [dataSource]="items" class="recruiter-search__table">
+                <ng-container matColumnDef="fullName">
+                  <th mat-header-cell *matHeaderCellDef>Nome completo</th>
+                  <td mat-cell *matCellDef="let candidate">{{ candidate.fullName }}</td>
+                </ng-container>
 
-              <ng-container matColumnDef="age">
-                <th mat-header-cell *matHeaderCellDef>Idade</th>
-                <td mat-cell *matCellDef="let candidate">{{ candidate.age }}</td>
-              </ng-container>
+                <ng-container matColumnDef="age">
+                  <th mat-header-cell *matHeaderCellDef>Idade</th>
+                  <td mat-cell *matCellDef="let candidate">{{ candidate.age }}</td>
+                </ng-container>
 
-              <ng-container matColumnDef="city">
-                <th mat-header-cell *matHeaderCellDef>Cidade</th>
-                <td mat-cell *matCellDef="let candidate">{{ candidate.city }}</td>
-              </ng-container>
+                <ng-container matColumnDef="bairro">
+                  <th mat-header-cell *matHeaderCellDef>Bairro</th>
+                  <td mat-cell *matCellDef="let candidate">{{ candidate.bairro }}</td>
+                </ng-container>
 
-              <ng-container matColumnDef="stateUf">
-                <th mat-header-cell *matHeaderCellDef>UF</th>
-                <td mat-cell *matCellDef="let candidate">{{ candidate.stateUf }}</td>
-              </ng-container>
+                <ng-container matColumnDef="city">
+                  <th mat-header-cell *matHeaderCellDef>Cidade</th>
+                  <td mat-cell *matCellDef="let candidate">{{ candidate.city }}</td>
+                </ng-container>
 
-              <ng-container matColumnDef="download">
-                <th mat-header-cell *matHeaderCellDef>Baixar currículo</th>
-                <td mat-cell *matCellDef="let candidate">
-                  <button
-                    mat-icon-button
-                    type="button"
-                    [attr.aria-label]="'Baixar currículo de ' + candidate.fullName"
-                    (click)="downloadCv(candidate)"
-                  >
-                    <mat-icon>description</mat-icon>
-                  </button>
-                </td>
-              </ng-container>
+                <ng-container matColumnDef="stateUf">
+                  <th mat-header-cell *matHeaderCellDef>UF</th>
+                  <td mat-cell *matCellDef="let candidate">{{ candidate.stateUf }}</td>
+                </ng-container>
 
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-            </table>
+                <ng-container matColumnDef="download">
+                  <th mat-header-cell *matHeaderCellDef>Baixar currículo</th>
+                  <td mat-cell *matCellDef="let candidate">
+                    <button
+                      mat-icon-button
+                      type="button"
+                      [attr.aria-label]="'Baixar currículo de ' + candidate.fullName"
+                      (click)="downloadCv(candidate)"
+                    >
+                      <mat-icon>description</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+              </table>
+            </div>
 
             <mat-paginator
               [length]="total"

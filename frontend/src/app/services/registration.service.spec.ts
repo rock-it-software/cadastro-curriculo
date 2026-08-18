@@ -26,6 +26,7 @@ describe('RegistrationService', () => {
       birthDate: new Date(2020, 3, 15),
       email: 'maria@example.com',
       phone: '(11) 98765-4321',
+      bairro: 'Pinheiros',
       city: 'São Paulo',
       stateUf: 'SP',
       desiredRoles: ['eletricista', 'motorista'],
@@ -42,6 +43,7 @@ describe('RegistrationService', () => {
     expect(body.get('birthDate')).toBe('2020-04-15');
     expect(body.get('email')).toBe('maria@example.com');
     expect(body.get('phone')).toBe('11987654321');
+    expect(body.get('bairro')).toBe('Pinheiros');
     expect(body.get('city')).toBe('São Paulo');
     expect(body.get('stateUf')).toBe('SP');
     expect(body.getAll('desiredRoles')).toEqual(['eletricista', 'motorista']);

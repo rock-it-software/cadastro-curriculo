@@ -30,6 +30,7 @@ export interface RegistrationFormValue {
   birthDate: Date | null;
   email: string;
   phone: string;
+  bairro: string;
   city: string;
   stateUf: string;
   desiredRoles: string[];

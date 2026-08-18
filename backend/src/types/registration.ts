@@ -35,6 +35,7 @@ export interface RegistrationInput {
   birthDate: string;
   email: string;
   phone: string;
+  bairro: string;
   city: string;
   stateUf: string;
   desiredRoles: string[];
@@ -69,6 +70,7 @@ export const DEFAULT_PAGE_SIZE = 20;
 
 export interface RegistrationsSearchQuery {
   jobRole: string;
+  bairro?: string;
   city?: string;
   uf?: string;
   page: number;
@@ -79,6 +81,7 @@ export interface CandidateSummary {
   id: string;
   fullName: string;
   age: number;
+  bairro: string;
   city: string;
   stateUf: string;
 }

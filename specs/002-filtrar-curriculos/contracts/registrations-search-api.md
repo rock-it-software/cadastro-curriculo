@@ -23,12 +23,15 @@ for full validation rules.
 | Parameter | Required | Example |
 |-----------|----------|---------|
 | `jobRole` | yes | `eletricista` |
+| `bairro` | no | `Boa Viagem` |
 | `city` | no | `São Paulo` |
 | `uf` | no | `SP` |
 | `page` | no (default `1`) | `2` |
 | `pageSize` | no (default `20`) | `50` |
 
-Example: `GET /api/registrations?jobRole=eletricista&city=Campinas&uf=SP&page=1&pageSize=20`
+Example: `GET /api/registrations?jobRole=eletricista&bairro=Cambuí&city=Campinas&uf=SP&page=1&pageSize=20`
+
+`bairro` was added by [003-add-bairro-field](../../003-add-bairro-field/contracts/bairro-field-addendum.md).
 
 ### Responses
 
@@ -42,6 +45,7 @@ matches (FR-020).
       "id": "9f1c2a7e-4b3d-4f8a-9c21-7e5d8b0a1234",
       "fullName": "Maria da Silva",
       "age": 34,
+      "bairro": "Cambuí",
       "city": "Campinas",
       "stateUf": "SP"
     }

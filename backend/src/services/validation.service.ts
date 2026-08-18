@@ -50,6 +50,11 @@ export function isValidPhone(value: string): boolean {
   return true;
 }
 
+export function isValidBairro(value: string): boolean {
+  const trimmed = value.trim();
+  return trimmed.length >= 1 && trimmed.length <= 100;
+}
+
 export function isValidCity(value: string): boolean {
   const trimmed = value.trim();
   return trimmed.length >= 1 && trimmed.length <= 100;
@@ -71,6 +76,7 @@ export function validateRegistrationFields(input: RegistrationInput): Validation
   if (!isValidBirthDate(input.birthDate)) invalidFields.push('birthDate');
   if (!isValidEmail(input.email)) invalidFields.push('email');
   if (!isValidPhone(input.phone)) invalidFields.push('phone');
+  if (!isValidBairro(input.bairro)) invalidFields.push('bairro');
   if (!isValidCity(input.city)) invalidFields.push('city');
   if (!isValidStateUf(input.stateUf)) invalidFields.push('stateUf');
   if (!isValidDesiredRoles(input.desiredRoles)) invalidFields.push('desiredRoles');
