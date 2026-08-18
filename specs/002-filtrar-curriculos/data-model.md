@@ -18,6 +18,7 @@ for the full column list. Columns read by this feature:
 | `id` | Row identity; used to build the CV download URL |
 | `full_name` | "Nome completo" column |
 | `birth_date` | "Idade" column (computed, see below) |
+| `bairro` | "Bairro" column and bairro filter (added by [003-add-bairro-field](../003-add-bairro-field/data-model.md)) |
 | `city` | "Cidade" column and city filter |
 | `state_uf` | "UF" column and UF filter |
 | `desired_roles` | Vaga filter (`@>` containment check) |
@@ -39,6 +40,7 @@ paginated and sorted server-side.
 | `id` | `string` (uuid) | `registrations.id` |
 | `fullName` | `string` | `registrations.full_name` |
 | `age` | `integer` | Completed years between `registrations.birth_date` and the server's current date at query time (R3) |
+| `bairro` | `string` | `registrations.bairro` (added by 003) |
 | `city` | `string` | `registrations.city` |
 | `stateUf` | `string` | `registrations.state_uf` |
 
@@ -69,6 +71,7 @@ unauthenticated route.
 | Parameter | Required | Type | Validation |
 |-----------|----------|------|------------|
 | `jobRole` | yes | one of the 9 `job_roles` slugs (see 001's data-model.md) | 400 if missing or not a member of the set |
+| `bairro` | no | free text | trimmed; empty string treated as absent (added by 003) |
 | `city` | no | free text | trimmed; empty string treated as absent |
 | `uf` | no | one of the 27 `state_uf` codes | 400 if present but not a member of the set |
 | `page` | no, default `1` | positive integer | clamped to `1` if missing/invalid |
@@ -92,14 +95,15 @@ those existing constants rather than redefining them.
 ## Query Semantics
 
 ```text
-   GET /api/registrations?jobRole=eletricista&city=São Paulo&uf=SP&page=1&pageSize=20
+   GET /api/registrations?jobRole=eletricista&bairro=Pinheiros&city=São Paulo&uf=SP&page=1&pageSize=20
                     │
                     ├─▶ jobRole missing/invalid ──── yes ──▶ 400, no query run
                     │
                     ▼
-   SELECT id, full_name, birth_date, city, state_uf, created_at
+   SELECT id, full_name, birth_date, bairro, city, state_uf, created_at
      FROM registrations
     WHERE desired_roles @> ARRAY['eletricista']
+      AND bairro ILIKE '%pinheiros%'    -- only when bairro provided (added by 003)
       AND city ILIKE '%são paulo%'      -- only when city provided
       AND state_uf = 'SP'               -- only when uf provided
     ORDER BY created_at ASC

@@ -107,6 +107,18 @@
       <mat-card class="registration-form__question-card" appearance="outlined">
         <mat-card-content>
           <mat-form-field appearance="outline" class="registration-form__field">
+            <mat-label>Bairro</mat-label>
+            <input matInput formControlName="bairro" maxlength="100" required />
+            @if (form.controls.bairro.invalid && form.controls.bairro.touched) {
+              <mat-error>Informe seu bairro.</mat-error>
+            }
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="registration-form__question-card" appearance="outlined">
+        <mat-card-content>
+          <mat-form-field appearance="outline" class="registration-form__field">
             <mat-label>Cidade</mat-label>
             <input matInput formControlName="city" maxlength="100" required />
             @if (form.controls.city.invalid && form.controls.city.touched) {

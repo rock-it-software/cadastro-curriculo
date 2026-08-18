@@ -9,6 +9,7 @@ const validInput: RegistrationInput = {
   birthDate: '1990-04-23',
   email: 'maria.silva@example.com',
   phone: '11987654321',
+  bairro: 'Boa Viagem',
   city: 'São Paulo',
   stateUf: 'SP',
   desiredRoles: ['eletricista'],

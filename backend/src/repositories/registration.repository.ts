@@ -27,6 +27,7 @@ export async function insertRegistration(
       birth_date: input.birthDate,
       email: input.email.trim(),
       phone: input.phone.replace(/\D/g, ''),
+      bairro: input.bairro.trim(),
       city: input.city.trim(),
       state_uf: input.stateUf.toUpperCase(),
       desired_roles: input.desiredRoles,
@@ -49,6 +50,7 @@ export interface RegistrationSearchRow {
   id: string;
   full_name: string;
   birth_date: string;
+  bairro: string;
   city: string;
   state_uf: string;
 }
@@ -61,14 +63,17 @@ export interface RegistrationSearchResult {
 export async function findRegistrations(
   query: RegistrationsSearchQuery,
 ): Promise<RegistrationSearchResult> {
-  const { jobRole, city, uf, page, pageSize } = query;
+  const { jobRole, bairro, city, uf, page, pageSize } = query;
   const offset = (page - 1) * pageSize;
 
   let builder = getSupabaseClient()
     .from('registrations')
-    .select('id, full_name, birth_date, city, state_uf', { count: 'exact' })
+    .select('id, full_name, birth_date, bairro, city, state_uf', { count: 'exact' })
     .contains('desired_roles', [jobRole]);
 
+  if (bairro) {
+    builder = builder.ilike('bairro', `%${bairro}%`);
+  }
   if (city) {
     builder = builder.ilike('city', `%${city}%`);
   }

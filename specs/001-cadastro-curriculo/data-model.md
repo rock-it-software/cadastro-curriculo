@@ -16,6 +16,7 @@ One row per candidate submission. Stored in Supabase Postgres.
 | `birth_date` | `date` | no | Date of birth; must not be in the future | FR-009 |
 | `email` | `text` | no | Contact email, valid format | FR-010 |
 | `phone` | `text` | no | Contact phone, stored as **digits only** (10 or 11 chars) | FR-011 |
+| `bairro` | `text` | no (added by [003-add-bairro-field](../003-add-bairro-field/data-model.md); phased rollout on existing data — see that doc) | Residence neighborhood name, free text, 1–100 chars after trimming | 003 FR-001 |
 | `city` | `text` | no | Residence city name, free text, 1–100 chars after trimming | FR-012 |
 | `state_uf` | `text` | no | Residence state, exactly 2 uppercase chars, one of the 27 UFs | FR-012a, FR-012b |
 | `desired_roles` | `text[]` | no | One or more values from the `job_roles` set; array must be non-empty | FR-013, FR-014 |
@@ -106,6 +107,7 @@ FR-016 and data integrity).
 | `birth_date` | Required; a valid calendar date; **not after today** | Same; datepicker `max` set to today (FR-009) |
 | `email` | Required; matches standard email format | Same (FR-010) |
 | `phone` | Required; after stripping non-digits, 10 or 11 digits; if 11 digits the 3rd digit must be `9` | Same (FR-011) |
+| `bairro` | Required; trimmed length 1–100 | Same (003 FR-002) |
 | `city` | Required; trimmed length 1–100 | Same (FR-012) |
 | `state_uf` | Required; exactly one value from the 27-item UF set below | Same (FR-012a, FR-012b) |
 | `desired_roles` | Required; at least 1 element; every element in the `job_roles` set | Same (FR-014) |
@@ -156,6 +158,7 @@ create table if not exists registrations (
   birth_date date not null check (birth_date <= current_date),
   email text not null,
   phone text not null check (phone ~ '^[0-9]{10,11}$'),
+  bairro text not null check (char_length(trim(bairro)) between 1 and 100),
   city text not null check (char_length(trim(city)) between 1 and 100),
   state_uf text not null check (state_uf in (
     'AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG',

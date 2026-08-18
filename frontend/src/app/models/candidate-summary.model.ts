@@ -2,6 +2,7 @@ export interface CandidateSummary {
   id: string;
   fullName: string;
   age: number;
+  bairro: string;
   city: string;
   stateUf: string;
 }
@@ -18,6 +19,7 @@ export const DEFAULT_PAGE_SIZE = 20;
 
 export interface RegistrationsSearchFilter {
   jobRole: string;
+  bairro?: string;
   city?: string;
   uf?: string;
   page?: number;

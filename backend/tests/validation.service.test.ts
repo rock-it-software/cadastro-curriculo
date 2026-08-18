@@ -1,6 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  isValidBairro,
   isValidBirthDate,
   isValidCity,
   isValidDesiredRoles,
@@ -18,6 +19,7 @@ const validInput: RegistrationInput = {
   birthDate: '1990-04-23',
   email: 'maria.silva@example.com',
   phone: '11987654321',
+  bairro: 'Boa Viagem',
   city: 'São Paulo',
   stateUf: 'SP',
   desiredRoles: ['eletricista', 'motorista'],
@@ -68,6 +70,12 @@ describe('isValidPhone', () => {
     assert.equal(isValidPhone('(11) 98765-4321'), true));
 });
 
+describe('isValidBairro', () => {
+  it('accepts a normal bairro name', () => assert.equal(isValidBairro('Boa Viagem'), true));
+  it('rejects empty', () => assert.equal(isValidBairro(''), false));
+  it('rejects over 100 chars', () => assert.equal(isValidBairro('a'.repeat(101)), false));
+});
+
 describe('isValidCity', () => {
   it('accepts a normal city name', () => assert.equal(isValidCity('São Paulo'), true));
   it('rejects empty', () => assert.equal(isValidCity(''), false));
@@ -104,6 +112,12 @@ describe('validateRegistrationFields', () => {
     });
     assert.equal(result.valid, false);
     assert.deepEqual(result.fields.sort(), ['desiredRoles', 'email', 'fullName']);
+  });
+
+  it('flags an invalid bairro', () => {
+    const result = validateRegistrationFields({ ...validInput, bairro: '' });
+    assert.equal(result.valid, false);
+    assert.deepEqual(result.fields, ['bairro']);
   });
 });
 

@@ -16,6 +16,7 @@ export class RegistrationService {
     formData.append('birthDate', this.toIsoDate(value.birthDate));
     formData.append('email', value.email);
     formData.append('phone', value.phone.replace(/\D/g, ''));
+    formData.append('bairro', value.bairro);
     formData.append('city', value.city);
     formData.append('stateUf', value.stateUf);
     for (const role of value.desiredRoles) {

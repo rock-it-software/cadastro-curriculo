@@ -44,8 +44,14 @@
   padding: var(--app-space-2) 0;
 }
 
+.recruiter-search__table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
 .recruiter-search__table {
   width: 100%;
+  min-width: 760px;
 }
 
 .recruiter-search__empty {

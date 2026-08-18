@@ -12,6 +12,7 @@ import {
 
 export interface RawSearchParams {
   jobRole?: unknown;
+  bairro?: unknown;
   city?: unknown;
   uf?: unknown;
   page?: unknown;
@@ -66,6 +67,7 @@ export async function searchRegistrations(
     );
   }
 
+  const bairro = typeof params.bairro === 'string' ? params.bairro.trim() : '';
   const city = typeof params.city === 'string' ? params.city.trim() : '';
   const uf = typeof params.uf === 'string' ? params.uf.toUpperCase() : '';
   if (uf && !(BRAZILIAN_STATES as readonly string[]).includes(uf)) {
@@ -80,6 +82,7 @@ export async function searchRegistrations(
   try {
     ({ rows, total } = await deps.findRegistrations({
       jobRole,
+      bairro: bairro || undefined,
       city: city || undefined,
       uf: uf || undefined,
       page,
@@ -94,6 +97,7 @@ export async function searchRegistrations(
     id: row.id,
     fullName: row.full_name,
     age: calculateAge(row.birth_date),
+    bairro: row.bairro,
     city: row.city,
     stateUf: row.state_uf,
   }));

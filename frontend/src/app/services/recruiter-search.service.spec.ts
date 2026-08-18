@@ -35,18 +35,35 @@ describe('RecruiterSearchService', () => {
     expect(response?.total).toBe(0);
   });
 
-  it('sends city, uf, page, and pageSize when provided', () => {
+  it('sends bairro, city, uf, page, and pageSize when provided', () => {
     service
-      .search({ jobRole: 'motorista', city: 'Campinas', uf: 'SP', page: 2, pageSize: 50 })
+      .search({
+        jobRole: 'motorista',
+        bairro: 'Cambuí',
+        city: 'Campinas',
+        uf: 'SP',
+        page: 2,
+        pageSize: 50,
+      })
       .subscribe();
 
     const req = httpMock.expectOne((r) => r.url === '/api/registrations');
     expect(req.request.params.get('jobRole')).toBe('motorista');
+    expect(req.request.params.get('bairro')).toBe('Cambuí');
     expect(req.request.params.get('city')).toBe('Campinas');
     expect(req.request.params.get('uf')).toBe('SP');
     expect(req.request.params.get('page')).toBe('2');
     expect(req.request.params.get('pageSize')).toBe('50');
 
     req.flush({ items: [], total: 0, page: 2, pageSize: 50 });
+  });
+
+  it('omits bairro from the query when absent', () => {
+    service.search({ jobRole: 'motorista' }).subscribe();
+
+    const req = httpMock.expectOne((r) => r.url === '/api/registrations');
+    expect(req.request.params.has('bairro')).toBe(false);
+
+    req.flush({ items: [], total: 0, page: 1, pageSize: 20 });
   });
 });

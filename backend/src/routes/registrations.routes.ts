@@ -41,6 +41,7 @@ registrationsRouter.post(
         birthDate: String(body.birthDate ?? ''),
         email: String(body.email ?? ''),
         phone: String(body.phone ?? ''),
+        bairro: String(body.bairro ?? ''),
         city: String(body.city ?? ''),
         stateUf: String(body.stateUf ?? ''),
         desiredRoles: asArray(body.desiredRoles),

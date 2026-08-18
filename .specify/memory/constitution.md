@@ -1,18 +1,19 @@
 <!--
 Sync Impact Report
-Version change: 2.1.0 → 2.2.0
+Version change: 2.2.0 → 2.3.0
 Modified principles:
-  - V. Simplicity & Prototype Speed (clarified: its "defer polish" rule does not
-    license inconsistency; cross-reference to new Principle VI added)
-Added sections:
-  - VI. Design & Usability Consistency (new principle)
+  - VI. Design & Usability Consistency (expanded: added a "Responsive layout"
+    bullet fixing the project's reference viewport widths — iPhone 14,
+    iPhone 14 Pro Max, iPad, desktop)
+Added sections: none
 Removed sections: none
 Templates requiring updates:
   - .specify/templates/plan-template.md ✅ (generic "Constitution Check" gate references this file dynamically, no edits needed)
   - .specify/templates/spec-template.md ✅ (no constitution-specific references found)
   - .specify/templates/tasks-template.md ✅ (no constitution-specific references found)
   - .claude/skills/*/SKILL.md ✅ (no agent-specific constitution references found)
-  - specs/001-cadastro-curriculo/plan.md ✅ (active plan's Constitution Check table updated with Principle VI row)
+  - specs/001-cadastro-curriculo/plan.md ⚠ pending (Constitution Check table predates Principle VI's responsive-layout bullet; not re-verified as part of this amendment since the feature is already in production)
+  - specs/002-filtrar-curriculos/plan.md ⚠ pending (Constitution Check table should confirm the recruiter search screen was checked at the four reference widths)
 Follow-up TODOs: none
 -->
 
@@ -131,6 +132,15 @@ Specifically:
 - **Baseline usability**: every input MUST have a programmatically associated
   label, MUST be reachable and operable by keyboard, and validation errors
   MUST identify the field they belong to.
+- **Responsive layout**: every screen MUST render correctly, without
+  horizontal scrolling, overlapping elements, or unreachable controls, at
+  the viewport widths of the project's reference devices: iPhone 14 (390px),
+  iPhone 14 Pro Max (430px), iPad (10.2", 810px, portrait and landscape), and
+  desktop (1280px and above). Layout MUST use responsive techniques (CSS
+  Grid/Flexbox with relative units and breakpoints, Angular Material's
+  layout utilities) rather than a fixed pixel width; a feature's plan.md
+  MUST note which of these reference widths were manually checked before
+  the feature is considered done.
 
 **Rationale**: Consistency is what makes an interface learnable — a user who
 learns one field learns them all. It is also the *cheaper* path for a
@@ -195,4 +205,4 @@ Versioning policy (semantic versioning applied to governance):
   materially expanded.
 - **PATCH**: Wording clarifications, typo fixes, non-semantic refinements.
 
-**Version**: 2.2.0 | **Ratified**: 2026-08-15 | **Last Amended**: 2026-08-15
+**Version**: 2.3.0 | **Ratified**: 2026-08-15 | **Last Amended**: 2026-08-18

@@ -13,6 +13,7 @@ const sampleRow: RegistrationSearchRow = {
   id: 'candidate-1',
   full_name: 'Maria da Silva',
   birth_date: '1990-04-23',
+  bairro: 'Pinheiros',
   city: 'São Paulo',
   state_uf: 'SP',
 };
@@ -85,6 +86,7 @@ describe('searchRegistrations', () => {
     const call = (deps.findRegistrations as ReturnType<typeof mock.fn>).mock.calls[0];
     assert.deepEqual(call.arguments[0], {
       jobRole: 'eletricista',
+      bairro: undefined,
       city: undefined,
       uf: undefined,
       page: 1,
@@ -104,6 +106,15 @@ describe('searchRegistrations', () => {
     const call = (deps.findRegistrations as ReturnType<typeof mock.fn>).mock.calls[0];
     assert.equal(call.arguments[0].city, 'Campinas');
     assert.equal(call.arguments[0].uf, 'SP');
+  });
+
+  it('trims bairro before querying', async () => {
+    const deps = buildDeps();
+
+    await searchRegistrations({ jobRole: 'eletricista', bairro: '  Boa Viagem  ' }, deps);
+
+    const call = (deps.findRegistrations as ReturnType<typeof mock.fn>).mock.calls[0];
+    assert.equal(call.arguments[0].bairro, 'Boa Viagem');
   });
 
   it('clamps invalid page and pageSize to the defaults', async () => {
